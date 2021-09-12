@@ -36,16 +36,16 @@
                 android:layout_margin="16dp" />
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:layout_width="match_parent"
                 android:id="@+id/swiperefreshLayout"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <androidx.recyclerview.widget.RecyclerView
-                    android:visibility="visible"
                     android:id="@+id/baseAdpater"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/white">
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:background="@color/white"
+                    android:visibility="visible"/>
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             <TextView
                 android:id="@+id/empty_recyler_View"

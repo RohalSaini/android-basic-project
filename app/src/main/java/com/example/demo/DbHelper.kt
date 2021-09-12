@@ -6,8 +6,12 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import com.example.demo.modal.Todo
 import com.example.demo.modal.User
+import com.google.android.material.snackbar.Snackbar
+import java.lang.Exception
 
 class DbHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,null,DATABASE_VERSION) {
     companion object {
@@ -230,7 +234,7 @@ class DbHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,null,D
             return list
         }
         // Get User by email
-        fun getTodoByEmail(email: String,offset:String): MutableList<Todo> {
+        fun getTodoByEmail(email: String,offset:String):MutableList<Todo> {
 
             var list :ArrayList<Todo> = ArrayList()
             val db = this.readableDatabase
@@ -247,7 +251,7 @@ class DbHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,null,D
                 null,
                 null,
                 null,
-                " $offset,5"
+                "$offset,5"
             )
 
                 /*
@@ -274,4 +278,35 @@ class DbHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,null,D
             }
             return list
         }
+    // Deleting single contact
+    fun deleteTodo(view:View,todo: Todo?):Boolean {
+        val db = this.writableDatabase
+        var status = false
+        try {
+            db.delete(DbHelper.TABLE_TODOS, "${DbHelper.KEY_ID} = ?", arrayOf(todo?.id))
+            status = true
+        }catch (error:Exception) {
+            Snackbar
+                .make(view,error.message.toString(), Snackbar.LENGTH_LONG)
+                .show()
+            status = false
+        }finally {
+            db.close()
+        }
+        return status
+    }
+    fun updateTodo(todo: Todo): Int {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.put(DbHelper.DESCRIPTION, todo.description) // Description
+        values.put(DbHelper.JOB_NAME,todo.job)  // job name
+
+        // updating row
+        return db.update(
+            DbHelper.TABLE_TODOS,
+            values,
+            "${DbHelper.KEY_ID} = ?",
+            arrayOf(todo.id)
+        )
+    }
 }

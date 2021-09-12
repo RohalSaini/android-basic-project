@@ -26,7 +26,7 @@
         <entry key="app/src/main/res/drawable/rounded_cornor.xml" value="0.1875" />
         <entry key="app/src/main/res/layout/activity_add_todo.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_dashboard.xml" value="0.14144736842105263" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/activity_main3.xml" value="0.17135416666666667" />
@@ -42,6 +42,7 @@
         <entry key="app/src/main/res/layout/fragment_test.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/fragment_test2.xml" value="0.15625" />
         <entry key="app/src/main/res/layout/fragment_two.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/layout/layout_update_todo.xml" value="0.21" />
         <entry key="app/src/main/res/layout/main_nav_drawer.xml" value="0.18" />
         <entry key="app/src/main/res/layout/realtive.xml" value="0.25" />
         <entry key="app/src/main/res/layout/relative.xml" value="0.17135416666666667" />

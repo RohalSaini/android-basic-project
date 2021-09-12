@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -22,6 +24,10 @@ import com.example.demo.modal.Todo
 import java.lang.Exception
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -41,6 +47,11 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
          // Getting data from parser
          user = intent.extras?.getParcelable<User>("obj")!!
 
+         // Printing User Detail on Navigation View
+         binding.navView.getHeaderView(0).findViewById<TextView>(R.id.right_side_menu).text = user.username
+
+         // navigation open on Click
+
          binding.navView.setNavigationItemSelectedListener(this)
          binding.floatAddTodo.setOnClickListener {
              var intent = Intent(this,TodoAddActivity::class.java)
@@ -49,26 +60,46 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
          }
          try {
              var db = DbHelper(this)
-             todoList =db.getTodoByEmail(user.email,"0")
+//             GlobalScope.launch(Dispatchers.IO) {
+//                 todoList =db.getTodoByEmail(email = user.email,offset = "0")
+//             }
+             todoList =db.getTodoByEmail(email = user.email,offset = "0")
+             // for checking
          } catch (error:Exception){
             Log.e(TAG,error.message.toString())
          }
          binding.swiperefreshLayout.setOnRefreshListener(OnRefreshListener {
-             var db = DbHelper(this)
-             var temp = db.getTodoByEmail(user.email,todoList.size.toString())
+//             GlobalScope.launch(Dispatchers.IO) {
+//                 var db = DbHelper(this@DashboardActivity)
+//                 var temp = async { db.getTodoByEmail(user.email,todoList.size.toString()) }.await()
+//                 for(todo in temp) {
+//                     todoList.add(todo)
+//                 }
+//                 //todoList = db.getTodoByEmail(user.email)
+//                 adapter.notifyDataSetChanged()
+//                 binding.swiperefreshLayout.isRefreshing = false
+//             }
+             var db = DbHelper(this@DashboardActivity)
+             var temp =  db.getTodoByEmail(user.email,todoList.size.toString())
              for(todo in temp) {
                  todoList.add(todo)
              }
-             //todoList = db.getTodoByEmail(user.email)
              adapter.notifyDataSetChanged()
+             //todoList = db.getTodoByEmail(user.email)
+             try {
+                 adapter.notifyDataSetChanged()
+             }catch (exception:Exception) {
+                 adapter = RecylerViewAdpater(this,todoList)
+             }
+
              binding.swiperefreshLayout.isRefreshing = false
          })
-         binding.layputToolbar.settings.setOnClickListener {
-             logout(this)
-         }
-//         binding.layputToolbar.expandedMenu.setOnClickListener {
-//             Log.d("One Id is", "Home button clicked")
+//         binding.layputToolbar.settings.setOnClickListener {
+//             logout(this)
 //         }
+         binding.layputToolbar.expandedMenu.setOnClickListener {
+             openDrawer(binding.drawerLayout)
+         }
 //         binding.layputToolbar.appName.setOnClickListener {
 //             Log.d("Two Id is", "app named clicked")
 //         }
@@ -96,7 +127,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     private fun closeDrawer(drawerLayout: DrawerLayout) {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.END)
+            // drawerLayout.closeDrawer(GravityCompat.END)
         }
     }
 
@@ -129,9 +160,9 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            binding.navView.menu.getItem(0).itemId -> Toast.makeText(this, "Home Clicked", Toast.LENGTH_LONG).show()
-            binding.navView.menu.getItem(1).itemId -> Toast.makeText(this, "Dashboard Clicked", Toast.LENGTH_LONG).show()
-            binding.navView.menu.getItem(2).itemId -> logout(this)
+            binding.navView.menu.getItem(0).itemId ->
+                                Toast.makeText(this, "Profile is clicked", Toast.LENGTH_LONG).show()
+            binding.navView.menu.getItem(1).itemId -> logout(this)
         }
         return true
     }
